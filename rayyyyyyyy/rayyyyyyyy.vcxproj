@@ -133,6 +133,7 @@
     <Image Include="assets\background.jpg" />
     <Image Include="assets\fallout.png" />
     <Image Include="assets\icon.png" />
+    <Image Include="assets\knight.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -32,5 +32,8 @@
     <Image Include="assets\fallout.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\knight.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

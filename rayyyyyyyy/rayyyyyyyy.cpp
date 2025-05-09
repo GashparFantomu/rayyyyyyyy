@@ -12,15 +12,17 @@ public:
         this->radius = radius;
         this->color = c;
     }
-    void draw() {
-        DrawCircle(centerX, centerY, radius, color);
-        
+    void draw(Texture2D texture) {
+        DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
     }
-    void update(const Rectangle& wall) {
+    void update(const Rectangle& wall, const Rectangle& anotherWall) {
         if (IsKeyDown(KEY_RIGHT)) {
             centerX += 6.0;
             if (CheckCollisionCircleRec({centerX, centerY}, radius, wall)) {
                 centerX -=6.0;
+            }
+            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
+                centerX -= 6.0;
             }
         }
         if (IsKeyDown(KEY_LEFT)) {
@@ -47,13 +49,19 @@ public:
 
 int main()
 {
-    InitWindow(1920, 800, "fereastra");
+    InitWindow(1920, 800, "metal soul - prototype");
     SetTargetFPS(60);
     Image icon = LoadImage("assets/icon.png");
-    Texture playerImage = LoadTexture("assets/icon.png");
+    Texture2D playerImage = LoadTexture("assets/knight.png");
+
     Player player(120.0, 120.0, 12, WHITE);
+
     Texture2D background = LoadTexture("assets/background.jpg");
+
+
     Rectangle wall = { 300, 200, 130, 30 };
+
+    Rectangle anotherWall = { 500, 400, 400, 30 };
 
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
@@ -63,7 +71,9 @@ int main()
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
     camera.zoom = 1.0;
+
     Vector2 playerPosition = { player.centerX, player.centerY };
+
     DrawTexture(playerImage, player.centerX, player.centerY, WHITE);
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -73,14 +83,14 @@ int main()
         BeginDrawing();
         ClearBackground(RAYWHITE);
         BeginMode2D(camera);
-        DrawText("TEXT", 880, 420, 50, LIGHTGRAY);
+ 
         DrawTexture(background, 0, 0, WHITE);
         
         DrawRectangleRec(wall, GRAY);
+        DrawRectangleRec(anotherWall, DARKPURPLE);
         camera.target = Vector2{ player.centerX, player.centerY };
-        player.draw();
-        player.update(wall);
-        
+        player.draw(playerImage);
+        player.update(wall, anotherWall);
         
         
         EndMode2D();
