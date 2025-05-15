@@ -9,7 +9,7 @@ public:
     Enemy(float enemyCenterX, float enemyCenterY, float enemyRadius, Color enemyColor) {
         this->enemyCenterX = enemyCenterX;
         this->enemyCenterY = enemyCenterY;
-        this->enemyColor = enemyColor;
+        this->enemyRadius = enemyRadius;
         this->enemyColor = enemyColor;
     }      
 
@@ -82,7 +82,7 @@ int main()
 
     Image icon = LoadImage("assets/icon.png");
     Texture2D playerImage = LoadTexture("assets/knight.png");
-    Texture2D enemyImage = LoadTexture("assets/Bones_shadow2_11.png");
+    Texture2D enemyImage = LoadTexture("assets/knight.png");
 
     Player player(120.0, 120.0, 12, WHITE);
     Enemy enemy(125.0, 125.0, 15, WHITE);
@@ -102,28 +102,27 @@ int main()
     camera.rotation = 0.0;
     camera.zoom = 1.0;
 
-    Vector2 playerPosition = { player.centerX, player.centerY };
-    Vector2 enemyPosition = {enemy.enemyCenterX, enemy.enemyCenterY};
-
-
     SetWindowIcon(icon);
     UnloadImage(icon);
     
     while (!WindowShouldClose()){
+        //actualizari
         player.update(wall, anotherWall);
+        camera.target = Vector2{ player.centerX, player.centerY };
 
         BeginDrawing();
+        //desenare
         ClearBackground(RAYWHITE);
+
         BeginMode2D(camera);
  
         DrawTexture(background, 0, 0, WHITE);
         
         DrawRectangleRec(wall, GRAY); //zid 1
         DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
-        camera.target = Vector2{ player.centerX, player.centerY };
+        
 
         player.draw(playerImage);
-        
         enemy.draw(enemyImage);
         
         EndMode2D();
