@@ -1,5 +1,24 @@
 #include "raylib.h"
 
+class Enemy {
+public:
+    float enemyCenterX, enemyCenterY, enemyRadius;
+    Color enemyColor;
+    Enemy(){}
+
+    Enemy(float enemyCenterX, float enemyCenterY, float enemyRadius, Color enemyColor) {
+        this->enemyCenterX = enemyCenterX;
+        this->enemyCenterY = enemyCenterY;
+        this->enemyColor = enemyColor;
+        this->enemyColor = enemyColor;
+    }      
+
+    void draw(Texture2D enemyTexture){
+        DrawTexture(enemyTexture, enemyCenterX - enemyTexture.width / 2, enemyCenterY - enemyTexture.height / 2, WHITE);
+    }
+    //void updateEmenyPosition(){}
+};
+
 class Player {
 public:
     float centerY, centerX, radius;
@@ -12,6 +31,7 @@ public:
         this->radius = radius;
         this->color = c;
     }
+
     void draw(Texture2D texture) {
         DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
     }
@@ -30,11 +50,17 @@ public:
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerX += 6.0;
             }
+            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
+                centerX += 6.0;
+            }
         }
         if (IsKeyDown(KEY_UP)) {
             centerY -= 6.0;
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerY +=6.0;
+            }
+            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
+                centerY += 6.0;
             }
         }
         if (IsKeyDown(KEY_DOWN)) {
@@ -42,22 +68,26 @@ public:
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerY -=6.0;
             }
+            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
+                centerY -= 6.0;
+            }
         }
     }
 };
-
 
 int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
     SetTargetFPS(60);
+
     Image icon = LoadImage("assets/icon.png");
     Texture2D playerImage = LoadTexture("assets/knight.png");
+    Texture2D enemyImage = LoadTexture("assets/Bones_shadow2_11.png");
 
     Player player(120.0, 120.0, 12, WHITE);
+    Enemy enemy(125.0, 125.0, 15, WHITE);
 
-    Texture2D background = LoadTexture("assets/background.jpg");
-
+    Texture2D background = LoadTexture("assets/terrain.png");
 
     Rectangle wall = { 300, 200, 130, 30 };
 
@@ -73,31 +103,33 @@ int main()
     camera.zoom = 1.0;
 
     Vector2 playerPosition = { player.centerX, player.centerY };
+    Vector2 enemyPosition = {enemy.enemyCenterX, enemy.enemyCenterY};
 
-    DrawTexture(playerImage, player.centerX, player.centerY, WHITE);
+
     SetWindowIcon(icon);
     UnloadImage(icon);
     
     while (!WindowShouldClose()){
-        
+        player.update(wall, anotherWall);
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
         BeginMode2D(camera);
  
         DrawTexture(background, 0, 0, WHITE);
         
-        DrawRectangleRec(wall, GRAY);
-        DrawRectangleRec(anotherWall, DARKPURPLE);
+        DrawRectangleRec(wall, GRAY); //zid 1
+        DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
         camera.target = Vector2{ player.centerX, player.centerY };
+
         player.draw(playerImage);
-        player.update(wall, anotherWall);
         
+        enemy.draw(enemyImage);
         
         EndMode2D();
         EndDrawing();
     }
 
     CloseWindow();
-
     return 0;
 }

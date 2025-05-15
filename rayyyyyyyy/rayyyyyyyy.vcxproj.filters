@@ -35,5 +35,11 @@
     <Image Include="assets\knight.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\terrain.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\craftpixUndead\PNG\Objects_separately\Bones_shadow2_11.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>
