@@ -75,17 +75,21 @@ public:
     }
 };
 
+float Lerp(float start, float end, float amount) { //easing la camera
+    return start + (end - start) * amount;
+}
+
 int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
     SetTargetFPS(60);
-
+    
     Image icon = LoadImage("assets/icon.png");
     Texture2D playerImage = LoadTexture("assets/knight.png");
     Texture2D enemyImage = LoadTexture("assets/knight.png");
 
     Player player(120.0, 120.0, 12, WHITE);
-    Enemy enemy(125.0, 125.0, 15, WHITE);
+    Enemy enemy(150.0, 150.0, 15, WHITE);
 
     Texture2D background = LoadTexture("assets/terrain.png");
 
@@ -101,6 +105,9 @@ int main()
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
     camera.zoom = 1.0;
+    float lerpFactor = 0.1;
+
+
 
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -108,11 +115,12 @@ int main()
     while (!WindowShouldClose()){
         //actualizari
         player.update(wall, anotherWall);
-        camera.target = Vector2{ player.centerX, player.centerY };
+        camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
+        camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
 
         BeginDrawing();
         //desenare
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
         BeginMode2D(camera);
  
