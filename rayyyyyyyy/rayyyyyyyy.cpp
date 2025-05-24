@@ -16,10 +16,27 @@ public:
     void draw(Texture2D enemyTexture){
         DrawTexture(enemyTexture, enemyCenterX - enemyTexture.width / 2, enemyCenterY - enemyTexture.height / 2, WHITE);
     }
-    //void updateEmenyPosition(){}
+    void updateEmenyPosition(){
+        enemyCenterX += 1;
+        //if (IsKeyDown(KEY_D)) {
+        //    enemyCenterX += 6.0;
+
+        //}
+        //if (IsKeyDown(KEY_A)) {
+        //    enemyCenterX -= 6.0;
+
+        //}
+        //if (IsKeyDown(KEY_W)) {
+        //    enemyCenterY -= 6.0;
+
+        //}
+        //if (IsKeyDown(KEY_S)) {
+        //    enemyCenterY += 6.0;
+        //}
+    }
 };
 
-class Player {
+class Player : Enemy{
 public:
     float centerY, centerX, radius;
     Color color;
@@ -35,7 +52,7 @@ public:
     void draw(Texture2D texture) {
         DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
     }
-    void update(const Rectangle& wall, const Rectangle& anotherWall) {
+    void update(const Rectangle& wall, const Rectangle& anotherWall, const Enemy& enemy) {
         if (IsKeyDown(KEY_RIGHT)) {
             centerX += 6.0;
             if (CheckCollisionCircleRec({centerX, centerY}, radius, wall)) {
@@ -72,6 +89,9 @@ public:
                 centerY -= 6.0;
             }
         }
+        if (CheckCollisionCircles({ centerX, centerY }, radius, { enemy.enemyCenterX, enemy.enemyCenterY }, enemy.enemyRadius)) {
+            DrawText("YOU FUCKIN' DIED!", centerX, centerY, 40, RED);
+        }
     }
 };
 
@@ -104,9 +124,8 @@ int main()
 
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
-    camera.zoom = 1.0;
+    camera.zoom = 1.2;
     float lerpFactor = 0.1;
-
 
 
     SetWindowIcon(icon);
@@ -114,7 +133,8 @@ int main()
     
     while (!WindowShouldClose()){
         //actualizari
-        player.update(wall, anotherWall);
+        player.update(wall, anotherWall, enemy);
+        enemy.updateEmenyPosition();
         camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
         camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
 
