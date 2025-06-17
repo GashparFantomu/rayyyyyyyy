@@ -102,6 +102,10 @@ float Lerp(float start, float end, float amount) { //easing la camera
 int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
+    InitAudioDevice();
+    Music bgMusic = LoadMusicStream("assets/background.mp3");
+    PlayMusicStream(bgMusic);
+
     SetTargetFPS(60);
     
     Image icon = LoadImage("assets/icon.png");
@@ -125,13 +129,14 @@ int main()
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
     camera.zoom = 1.2;
-    float lerpFactor = 0.1;
+    float lerpFactor = 0.05;
 
 
     SetWindowIcon(icon);
     UnloadImage(icon);
     
     while (!WindowShouldClose()){
+        UpdateMusicStream(bgMusic);
         //actualizari
         player.update(wall, anotherWall, enemy);
         enemy.updateEmenyPosition();
@@ -156,6 +161,8 @@ int main()
         EndMode2D();
         EndDrawing();
     }
+    UnloadMusicStream(bgMusic);
+    CloseAudioDevice();
 
     CloseWindow();
     return 0;
