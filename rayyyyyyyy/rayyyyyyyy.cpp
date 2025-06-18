@@ -36,7 +36,7 @@ public:
     }
 };
 
-class Player : Enemy{
+class Player{
 public:
     float centerY, centerX, radius;
     Color color;
@@ -103,7 +103,7 @@ int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
     InitAudioDevice();
-    Music bgMusic = LoadMusicStream("assets/background.mp3");
+    Music bgMusic = LoadMusicStream("assets/ambientBG.mp3");
     PlayMusicStream(bgMusic);
 
     SetTargetFPS(60);
@@ -118,7 +118,6 @@ int main()
     Texture2D background = LoadTexture("assets/terrain.png");
 
     Rectangle wall = { 300, 200, 130, 30 };
-
     Rectangle anotherWall = { 500, 400, 400, 30 };
 
     int screenWidth = GetScreenWidth();

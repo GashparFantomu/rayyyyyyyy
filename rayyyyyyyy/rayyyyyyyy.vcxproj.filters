@@ -46,5 +46,8 @@
     <Media Include="assets\background.mp3">
       <Filter>assets</Filter>
     </Media>
+    <Media Include="assets\ambientBG.mp3">
+      <Filter>assets</Filter>
+    </Media>
   </ItemGroup>
 </Project>

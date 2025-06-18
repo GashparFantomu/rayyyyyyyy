@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\background.mp3" />
+    <Media Include="assets\ambientBG.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
