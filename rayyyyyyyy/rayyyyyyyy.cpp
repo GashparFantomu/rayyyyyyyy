@@ -1,5 +1,9 @@
-#include "raylib.h"
+﻿#include "raylib.h"
 
+enum gameState {
+    MENU, PLAYING, GAME_OVER
+};
+gameState currentGameState = MENU;
 class Enemy {
 public:
     float enemyCenterX, enemyCenterY, enemyRadius;
@@ -53,7 +57,7 @@ public:
         DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
     }
     void update(const Rectangle& wall, const Rectangle& anotherWall, const Enemy& enemy) {
-        if (IsKeyDown(KEY_RIGHT)) {
+        if (IsKeyDown(KEY_D)) {
             centerX += 6.0;
             if (CheckCollisionCircleRec({centerX, centerY}, radius, wall)) {
                 centerX -=6.0;
@@ -62,7 +66,7 @@ public:
                 centerX -= 6.0;
             }
         }
-        if (IsKeyDown(KEY_LEFT)) {
+        if (IsKeyDown(KEY_A)) {
             centerX -= 6.0;
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerX += 6.0;
@@ -71,7 +75,7 @@ public:
                 centerX += 6.0;
             }
         }
-        if (IsKeyDown(KEY_UP)) {
+        if (IsKeyDown(KEY_W)) {
             centerY -= 6.0;
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerY +=6.0;
@@ -80,7 +84,7 @@ public:
                 centerY += 6.0;
             }
         }
-        if (IsKeyDown(KEY_DOWN)) {
+        if (IsKeyDown(KEY_S)) {
             centerY += 6.0;
             if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
                 centerY -=6.0;
@@ -90,7 +94,7 @@ public:
             }
         }
         if (CheckCollisionCircles({ centerX, centerY }, radius, { enemy.enemyCenterX, enemy.enemyCenterY }, enemy.enemyRadius)) {
-            DrawText("YOU FUCKIN' DIED!", centerX, centerY, 40, RED);
+            currentGameState = GAME_OVER;
         }
     }
 };
@@ -103,8 +107,12 @@ int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
     InitAudioDevice();
-    Music bgMusic = LoadMusicStream("assets/ambientBG.mp3");
-    PlayMusicStream(bgMusic);
+    Music bgMusic = LoadMusicStream("assets/background.mp3");
+    Music menuMusic = LoadMusicStream("assets/menu.mp3");
+    Music endMusic = LoadMusicStream("assets/death_screen.mp3");
+
+    PlayMusicStream(menuMusic);
+
 
     SetTargetFPS(60);
     
@@ -134,33 +142,89 @@ int main()
     SetWindowIcon(icon);
     UnloadImage(icon);
     
+    gameState previousState = currentGameState;
+
     while (!WindowShouldClose()){
-        UpdateMusicStream(bgMusic);
-        //actualizari
-        player.update(wall, anotherWall, enemy);
-        enemy.updateEmenyPosition();
-        camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
-        camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
+        if (currentGameState != previousState) {
+            switch (currentGameState) {
+            case MENU:
+                StopMusicStream(bgMusic);
+                StopMusicStream(endMusic);
+                PlayMusicStream(menuMusic);
+                break;
+            case PLAYING:
+                StopMusicStream(menuMusic);
+                StopMusicStream(endMusic);
+                PlayMusicStream(bgMusic);
+                break;
+            case GAME_OVER:
+                StopMusicStream(bgMusic);
+                StopMusicStream(menuMusic);
+                PlayMusicStream(endMusic);
+                break;
+            }
+            previousState = currentGameState;
 
-        BeginDrawing();
-        //desenare
-        ClearBackground(BLACK);
+        }
 
-        BeginMode2D(camera);
- 
-        DrawTexture(background, 0, 0, WHITE);
-        
-        DrawRectangleRec(wall, GRAY); //zid 1
-        DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
-        
+        switch (currentGameState) {
+        case MENU:
+            BeginDrawing();
+            UpdateMusicStream(menuMusic);
+            ClearBackground(BLACK);
+            DrawText("METAL SOUL - PROTORYPE", 600, 200, 50, RED);
+            DrawText("PRESS ENTER", 850, 450, 30, DARKGRAY);
+            if (IsKeyPressed(KEY_ENTER)) {
+                currentGameState = PLAYING;
+            }
+            EndDrawing();
+            break;
+        case PLAYING:
+            UpdateMusicStream(bgMusic);
+            //actualizari
+            player.update(wall, anotherWall, enemy);
+            enemy.updateEmenyPosition();
+            camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
+            camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
 
-        player.draw(playerImage);
-        enemy.draw(enemyImage);
-        
-        EndMode2D();
-        EndDrawing();
+            BeginDrawing();
+            //desenare
+            ClearBackground(BLACK);
+
+            BeginMode2D(camera);
+
+            DrawTexture(background, 0, 0, WHITE);
+
+            DrawRectangleRec(wall, GRAY); //zid 1
+            DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
+
+
+            player.draw(playerImage);
+            enemy.draw(enemyImage);
+
+            EndMode2D();
+            EndDrawing();
+            break;
+        case GAME_OVER:
+            BeginDrawing();
+            ClearBackground(BLACK);
+            UpdateMusicStream(endMusic);
+            DrawText("YOU FUCKIN' DIED!", 600, 250, 70, RED);
+            //DrawText("I looooooove watching you fail", 700, 550, 25, RED);
+            if (IsKeyPressed(KEY_ENTER)) {
+                currentGameState = PLAYING;
+                player.centerX = 120;
+                player.centerY = 120;
+                StopMusicStream(endMusic);
+            }
+            EndDrawing();
+        }
+
     }
     UnloadMusicStream(bgMusic);
+    UnloadMusicStream(menuMusic);
+    UnloadMusicStream(endMusic);
+
     CloseAudioDevice();
 
     CloseWindow();

@@ -41,12 +41,21 @@
     <Image Include="assets\craftpixUndead\PNG\Objects_separately\Bones_shadow2_11.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\menu.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\background.mp3">
       <Filter>assets</Filter>
     </Media>
     <Media Include="assets\ambientBG.mp3">
+      <Filter>assets</Filter>
+    </Media>
+    <Media Include="assets\menu.mp3">
+      <Filter>assets</Filter>
+    </Media>
+    <Media Include="assets\death_screen.mp3">
       <Filter>assets</Filter>
     </Media>
   </ItemGroup>

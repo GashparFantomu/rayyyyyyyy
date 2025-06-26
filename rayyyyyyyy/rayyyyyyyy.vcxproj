@@ -135,11 +135,14 @@
     <Image Include="assets\fallout.png" />
     <Image Include="assets\icon.png" />
     <Image Include="assets\knight.png" />
+    <Image Include="assets\menu.png" />
     <Image Include="assets\terrain.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\background.mp3" />
     <Media Include="assets\ambientBG.mp3" />
+    <Media Include="assets\death_screen.mp3" />
+    <Media Include="assets\menu.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
