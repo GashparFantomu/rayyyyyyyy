@@ -1,5 +1,6 @@
 ﻿#include "raylib.h"
 
+
 enum gameState {
     MENU, PLAYING, GAME_OVER
 };
@@ -51,6 +52,10 @@ public:
         this->centerY = centerY;
         this->radius = radius;
         this->color = c;
+    }
+
+    void shoot() {
+
     }
 
     void draw(Texture2D texture) {
@@ -107,9 +112,9 @@ int main()
 {
     InitWindow(1920, 800, "metal soul - prototype");
     InitAudioDevice();
-    Music bgMusic = LoadMusicStream("assets/background.mp3");
-    Music menuMusic = LoadMusicStream("assets/menu.mp3");
-    Music endMusic = LoadMusicStream("assets/death_screen.mp3");
+    Music bgMusic = LoadMusicStream("assets/Into Darkness.mp3");
+    Music menuMusic = LoadMusicStream("assets/Dragonsreach.mp3");
+    Music endMusic = LoadMusicStream("assets/death.mp3");
 
     PlayMusicStream(menuMusic);
 
@@ -123,7 +128,10 @@ int main()
     Player player(120.0, 120.0, 12, WHITE);
     Enemy enemy(150.0, 150.0, 15, WHITE);
 
-    Texture2D background = LoadTexture("assets/terrain.png");
+    Texture2D background = LoadTexture("assets/background.jpg");
+    Texture2D menuBG = LoadTexture("assets/menu.jpg");
+    Texture2D tileset = LoadTexture("assets/Full.png");
+    
 
     Rectangle wall = { 300, 200, 130, 30 };
     Rectangle anotherWall = { 500, 400, 400, 30 };
@@ -172,8 +180,9 @@ int main()
             BeginDrawing();
             UpdateMusicStream(menuMusic);
             ClearBackground(BLACK);
-            DrawText("METAL SOUL - PROTORYPE", 600, 200, 50, RED);
-            DrawText("PRESS ENTER", 850, 450, 30, DARKGRAY);
+            DrawTexture(menuBG, 0, 0, WHITE);
+            DrawText("METAL SOUL - PROTORYPE", 600, 200, 50, WHITE);
+            DrawText("PRESS ENTER", 850, 450, 30, RAYWHITE);
             if (IsKeyPressed(KEY_ENTER)) {
                 currentGameState = PLAYING;
             }
