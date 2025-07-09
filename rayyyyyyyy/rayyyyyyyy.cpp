@@ -1,5 +1,6 @@
 ﻿#include "raylib.h"
-
+#include "raylib-tileson.h"
+#include "tileson.hpp"
 
 enum gameState {
     MENU, PLAYING, GAME_OVER
@@ -130,8 +131,13 @@ int main()
 
     Texture2D background = LoadTexture("assets/background.jpg");
     Texture2D menuBG = LoadTexture("assets/menu.jpg");
-    Texture2D tileset = LoadTexture("assets/Full.png");
-    
+
+    Texture2D tileset = LoadTexture("assets/tmw_desert_spacing.png");
+    SetTextureFilter(tileset, TEXTURE_FILTER_POINT);
+    Map map = LoadTiled("assets/desert.json");
+    if (!IsTiledReady(map)) {
+        TraceLog(LOG_ERROR, "Failed to load the damn map!");
+    }
 
     Rectangle wall = { 300, 200, 130, 30 };
     Rectangle anotherWall = { 500, 400, 400, 30 };
@@ -143,7 +149,7 @@ int main()
 
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
-    camera.zoom = 1.2;
+    camera.zoom = 1.;
     float lerpFactor = 0.05;
 
 
@@ -195,17 +201,21 @@ int main()
             enemy.updateEmenyPosition();
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
+            //camera.target.x = roundf(camera.target.x);
+            //camera.target.y = roundf(camera.target.y);
+
 
             BeginDrawing();
             //desenare
             ClearBackground(BLACK);
 
             BeginMode2D(camera);
+            DrawTiled(map, 0, 0, WHITE);
 
-            DrawTexture(background, 0, 0, WHITE);
+            //DrawTexture(background, 0, 0, WHITE);
 
-            DrawRectangleRec(wall, GRAY); //zid 1
-            DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
+            //DrawRectangleRec(wall, GRAY); //zid 1
+            //DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
 
 
             player.draw(playerImage);
@@ -233,6 +243,7 @@ int main()
     UnloadMusicStream(bgMusic);
     UnloadMusicStream(menuMusic);
     UnloadMusicStream(endMusic);
+    UnloadMap(map);
 
     CloseAudioDevice();
 

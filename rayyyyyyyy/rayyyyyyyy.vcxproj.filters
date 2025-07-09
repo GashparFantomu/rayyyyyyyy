@@ -21,6 +21,9 @@
     <ClCompile Include="rayyyyyyyy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="raylib-tileson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\icon.png">
@@ -33,6 +36,9 @@
       <Filter>assets</Filter>
     </Image>
     <Image Include="assets\menu.jpg">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\tmw_desert_spacing.png">
       <Filter>assets</Filter>
     </Image>
   </ItemGroup>
@@ -54,5 +60,16 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="raylib-tileson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tileson.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\desert.json">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
 </Project>

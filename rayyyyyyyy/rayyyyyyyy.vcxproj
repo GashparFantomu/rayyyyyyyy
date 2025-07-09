@@ -104,6 +104,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\Gashpar Fantomu%27\Documents\some non-developer business\GashparFantomu\rayyyyyyyy\rayyyyyyyy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="raylib-tileson.cpp" />
     <ClCompile Include="rayyyyyyyy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +137,7 @@
     <Image Include="assets\icon.png" />
     <Image Include="assets\knight.png" />
     <Image Include="assets\menu.jpg" />
+    <Image Include="assets\tmw_desert_spacing.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\death.mp3" />
@@ -143,6 +147,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="raylib-tileson.h" />
+    <ClInclude Include="tileson.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\desert.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
