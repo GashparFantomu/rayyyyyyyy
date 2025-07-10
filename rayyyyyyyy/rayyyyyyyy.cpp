@@ -6,6 +6,23 @@ enum gameState {
     MENU, PLAYING, GAME_OVER
 };
 gameState currentGameState = MENU;
+
+class Npc {
+public:
+    float npcCenterX, npcCenterY, npcRadius;
+    Color npcColor;
+    Npc() {};
+    Npc(float npcCenterX, float npcCenterY, float npcRadius, Color npcColor) {
+        this->npcCenterX = npcCenterX;
+        this->npcCenterY = npcCenterY;
+        this->npcRadius = npcRadius;
+        this->npcColor = npcColor;
+    }
+    void draw(Texture2D npcTexture) {
+        DrawTexture(npcTexture, npcCenterX - npcTexture.width / 2, npcCenterY - npcTexture.height / 2, WHITE);
+    }
+};
+
 class Enemy {
 public:
     float enemyCenterX, enemyCenterY, enemyRadius;
@@ -23,7 +40,7 @@ public:
         DrawTexture(enemyTexture, enemyCenterX - enemyTexture.width / 2, enemyCenterY - enemyTexture.height / 2, WHITE);
     }
     void updateEmenyPosition(){
-        enemyCenterX += 1;
+        enemyCenterX += 0.6;
         //if (IsKeyDown(KEY_D)) {
         //    enemyCenterX += 6.0;
 
@@ -62,7 +79,7 @@ public:
     void draw(Texture2D texture) {
         DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
     }
-    void update(const Rectangle& wall, const Rectangle& anotherWall, const Enemy& enemy) {
+    void update(const Rectangle& wall, const Rectangle& anotherWall, const Enemy& enemy, const Npc& npc, bool& canInteractWithNpc) {
         if (IsKeyDown(KEY_D)) {
             centerX += 6.0;
             if (CheckCollisionCircleRec({centerX, centerY}, radius, wall)) {
@@ -102,6 +119,12 @@ public:
         if (CheckCollisionCircles({ centerX, centerY }, radius, { enemy.enemyCenterX, enemy.enemyCenterY }, enemy.enemyRadius)) {
             currentGameState = GAME_OVER;
         }
+        if (CheckCollisionCircles({ centerX, centerY }, radius, { npc.npcCenterX, npc.npcCenterY }, npc.npcRadius + 25)) {//marit raza cu 20 sa nu fie efectiv peste el
+            canInteractWithNpc = true;
+        }
+        else {
+            canInteractWithNpc = false;
+        }
     }
 };
 
@@ -125,9 +148,13 @@ int main()
     Image icon = LoadImage("assets/icon.png");
     Texture2D playerImage = LoadTexture("assets/knight.png");
     Texture2D enemyImage = LoadTexture("assets/knight.png");
+    Texture2D npcImage = LoadTexture("assets/knight.png");
 
     Player player(120.0, 120.0, 12, WHITE);
     Enemy enemy(150.0, 150.0, 15, WHITE);
+    Npc npc(110.0, 110.0, 12, WHITE);
+
+    bool canInteractWithNpc = false;
 
     Texture2D background = LoadTexture("assets/background.jpg");
     Texture2D menuBG = LoadTexture("assets/menu.jpg");
@@ -149,16 +176,15 @@ int main()
 
     camera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0.0;
-    camera.zoom = 1.;
+    camera.zoom = 1.0;
     float lerpFactor = 0.05;
 
 
     SetWindowIcon(icon);
-    UnloadImage(icon);
     
     gameState previousState = currentGameState;
 
-    while (!WindowShouldClose()){
+    while (!WindowShouldClose()){ //THE MAIN GAME LOOP
         if (currentGameState != previousState) {
             switch (currentGameState) {
             case MENU:
@@ -197,7 +223,7 @@ int main()
         case PLAYING:
             UpdateMusicStream(bgMusic);
             //actualizari
-            player.update(wall, anotherWall, enemy);
+            player.update(wall, anotherWall, enemy, npc, canInteractWithNpc);
             enemy.updateEmenyPosition();
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
@@ -214,14 +240,24 @@ int main()
 
             //DrawTexture(background, 0, 0, WHITE);
 
-            //DrawRectangleRec(wall, GRAY); //zid 1
-            //DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
+            DrawRectangleRec(wall, GRAY); //zid 1
+            DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
 
 
             player.draw(playerImage);
             enemy.draw(enemyImage);
-
+            npc.draw(npcImage);
+            
             EndMode2D();
+
+            // Draw "Interact (E)" centered at the bottom of the screen if the player can interact with the NPC
+            if (canInteractWithNpc) {
+                DrawText("Interact(E)", screenWidth / 2, screenHeight - 65, 25, RAYWHITE);
+                //if (IsKeyPressed(KEY_E)) {
+                //    DrawText("Some generic shitty ass dialog text without animation", screenWidth / 2, screenHeight - 120, 25, RAYWHITE);
+                //}
+            }
+
             EndDrawing();
             break;
         case GAME_OVER:
@@ -244,6 +280,14 @@ int main()
     UnloadMusicStream(menuMusic);
     UnloadMusicStream(endMusic);
     UnloadMap(map);
+    UnloadTexture(enemyImage);
+    UnloadTexture(playerImage);
+    UnloadTexture(npcImage);
+    UnloadTexture(background);
+    UnloadTexture(menuBG);
+    UnloadImage(icon);
+    UnloadTexture(tileset);
+
 
     CloseAudioDevice();
 
