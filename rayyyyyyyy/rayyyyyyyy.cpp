@@ -1,132 +1,10 @@
 ﻿#include "raylib.h"
 #include "raylib-tileson.h"
 #include "tileson.hpp"
-
-enum gameState {
-    MENU, PLAYING, GAME_OVER
-};
-gameState currentGameState = MENU;
-
-class Npc {
-public:
-    float npcCenterX, npcCenterY, npcRadius;
-    Color npcColor;
-    Npc() {};
-    Npc(float npcCenterX, float npcCenterY, float npcRadius, Color npcColor) {
-        this->npcCenterX = npcCenterX;
-        this->npcCenterY = npcCenterY;
-        this->npcRadius = npcRadius;
-        this->npcColor = npcColor;
-    }
-    void draw(Texture2D npcTexture) {
-        DrawTexture(npcTexture, npcCenterX - npcTexture.width / 2, npcCenterY - npcTexture.height / 2, WHITE);
-    }
-};
-
-class Enemy {
-public:
-    float enemyCenterX, enemyCenterY, enemyRadius;
-    Color enemyColor;
-    Enemy(){}
-
-    Enemy(float enemyCenterX, float enemyCenterY, float enemyRadius, Color enemyColor) {
-        this->enemyCenterX = enemyCenterX;
-        this->enemyCenterY = enemyCenterY;
-        this->enemyRadius = enemyRadius;
-        this->enemyColor = enemyColor;
-    }      
-
-    void draw(Texture2D enemyTexture){
-        DrawTexture(enemyTexture, enemyCenterX - enemyTexture.width / 2, enemyCenterY - enemyTexture.height / 2, WHITE);
-    }
-    void updateEmenyPosition(){
-        enemyCenterX += 0.6;
-        //if (IsKeyDown(KEY_D)) {
-        //    enemyCenterX += 6.0;
-
-        //}
-        //if (IsKeyDown(KEY_A)) {
-        //    enemyCenterX -= 6.0;
-
-        //}
-        //if (IsKeyDown(KEY_W)) {
-        //    enemyCenterY -= 6.0;
-
-        //}
-        //if (IsKeyDown(KEY_S)) {
-        //    enemyCenterY += 6.0;
-        //}
-    }
-};
-
-class Player{
-public:
-    float centerY, centerX, radius;
-    Color color;
-
-    Player(){}
-    Player(float centerX, float centerY, float radius, Color c) {
-        this->centerX = centerX;
-        this->centerY = centerY;
-        this->radius = radius;
-        this->color = c;
-    }
-
-    void shoot() {
-
-    }
-
-    void draw(Texture2D texture) {
-        DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
-    }
-    void update(const Rectangle& wall, const Rectangle& anotherWall, const Enemy& enemy, const Npc& npc, bool& canInteractWithNpc) {
-        if (IsKeyDown(KEY_D)) {
-            centerX += 6.0;
-            if (CheckCollisionCircleRec({centerX, centerY}, radius, wall)) {
-                centerX -=6.0;
-            }
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
-                centerX -= 6.0;
-            }
-        }
-        if (IsKeyDown(KEY_A)) {
-            centerX -= 6.0;
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
-                centerX += 6.0;
-            }
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
-                centerX += 6.0;
-            }
-        }
-        if (IsKeyDown(KEY_W)) {
-            centerY -= 6.0;
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
-                centerY +=6.0;
-            }
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
-                centerY += 6.0;
-            }
-        }
-        if (IsKeyDown(KEY_S)) {
-            centerY += 6.0;
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, wall)) {
-                centerY -=6.0;
-            }
-            if (CheckCollisionCircleRec({ centerX, centerY }, radius, anotherWall)) {
-                centerY -= 6.0;
-            }
-        }
-        if (CheckCollisionCircles({ centerX, centerY }, radius, { enemy.enemyCenterX, enemy.enemyCenterY }, enemy.enemyRadius)) {
-            currentGameState = GAME_OVER;
-        }
-        if (CheckCollisionCircles({ centerX, centerY }, radius, { npc.npcCenterX, npc.npcCenterY }, npc.npcRadius + 25)) {//marit raza cu 20 sa nu fie efectiv peste el
-            canInteractWithNpc = true;
-        }
-        else {
-            canInteractWithNpc = false;
-        }
-    }
-};
+#include "Npc.h"
+#include "Enemy.h"
+#include "Player.h"
+#include "gameState.h"
 
 float Lerp(float start, float end, float amount) { //easing la camera
     return start + (end - start) * amount;
@@ -141,7 +19,7 @@ int main()
     Music endMusic = LoadMusicStream("assets/death.mp3");
 
     PlayMusicStream(menuMusic);
-
+    gameState currentGameState = MENU; // Initialize to a valid state
 
     SetTargetFPS(60);
     
@@ -223,7 +101,7 @@ int main()
         case PLAYING:
             UpdateMusicStream(bgMusic);
             //actualizari
-            player.update(wall, anotherWall, enemy, npc, canInteractWithNpc);
+            player.update(wall, anotherWall, enemy, npc, canInteractWithNpc, currentGameState);
             enemy.updateEmenyPosition();
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
