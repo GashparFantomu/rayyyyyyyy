@@ -95,22 +95,15 @@ void Player::update(const Rectangle& wall, const Rectangle& anotherWall, const E
     }
     if (IsKeyPressed(KEY_UP)) {
         shoot(0);
-        drawArrow();
     }
     if (IsKeyPressed(KEY_DOWN)) {
         shoot(1);
-        drawArrow();
 
     }
     if (IsKeyPressed(KEY_LEFT)) {
         shoot(2);
-        drawArrow();
-
     }
     if (IsKeyPressed(KEY_RIGHT)) {
         shoot(3);
-        drawArrow();
-
     }
-
 }

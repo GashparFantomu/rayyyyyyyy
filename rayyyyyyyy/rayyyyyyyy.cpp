@@ -100,14 +100,13 @@ int main(){
             break;
         case PLAYING:
             UpdateMusicStream(bgMusic);
-            //actualizari
             player.update(wall, anotherWall, enemy, npc, canInteractWithNpc, currentGameState);
+            player.updateArrow(GetFrameTime()); 
             enemy.updateEmenyPosition();
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
             camera.target.x = roundf(camera.target.x);
             camera.target.y = roundf(camera.target.y);
-
 
             BeginDrawing();
             //desenare
