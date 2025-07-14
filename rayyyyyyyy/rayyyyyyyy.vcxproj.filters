@@ -50,6 +50,9 @@
     <Image Include="assets\tmw_desert_spacing.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\Arrow01(32x32).png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\menu.mp3">
@@ -85,6 +88,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weapons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
