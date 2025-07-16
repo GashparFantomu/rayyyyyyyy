@@ -10,8 +10,7 @@ float Lerp(float start, float end, float amount) { //easing la camera
     return start + (end - start) * amount;
 }
 
-int main()
-{
+int main(){
     InitWindow(1920, 800, "metal soul - prototype");
     InitAudioDevice();
     Music bgMusic = LoadMusicStream("assets/Into Darkness.mp3");
@@ -19,7 +18,7 @@ int main()
     Music endMusic = LoadMusicStream("assets/death.mp3");
 
     PlayMusicStream(menuMusic);
-    gameState currentGameState = MENU; // Initialize to a valid state
+    gameState currentGameState = MENU; 
 
     SetTargetFPS(60);
     
@@ -27,6 +26,7 @@ int main()
     Texture2D playerImage = LoadTexture("assets/knight.png");
     Texture2D enemyImage = LoadTexture("assets/knight.png");
     Texture2D npcImage = LoadTexture("assets/knight.png");
+    Texture2D arrow = LoadTexture("assets/Arrow01(32x32).png");
 
     Player player(120.0, 120.0, 12, WHITE);
     Enemy enemy(150.0, 150.0, 15, WHITE);
@@ -100,14 +100,13 @@ int main()
             break;
         case PLAYING:
             UpdateMusicStream(bgMusic);
-            //actualizari
             player.update(wall, anotherWall, enemy, npc, canInteractWithNpc, currentGameState);
+            player.updateArrow(GetFrameTime()); 
             enemy.updateEmenyPosition();
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
-            //camera.target.x = roundf(camera.target.x);
-            //camera.target.y = roundf(camera.target.y);
-
+            camera.target.x = roundf(camera.target.x);
+            camera.target.y = roundf(camera.target.y);
 
             BeginDrawing();
             //desenare
@@ -123,6 +122,8 @@ int main()
 
 
             player.draw(playerImage);
+            
+            player.drawArrow();
             enemy.draw(enemyImage);
             npc.draw(npcImage);
             
