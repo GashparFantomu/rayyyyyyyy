@@ -15,7 +15,7 @@ public:
 	vector<Arrow> arrows;
 	Player();
 	Player(float centerX, float centerY, float radius, Color c);
-	void shoot(int direction);
+	void shoot(Vector2 direction);
 	void drawArrow();
 	void updateArrow(float deltaTIme);
 	void draw(Texture2D texture);

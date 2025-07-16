@@ -13,19 +13,20 @@ Player::Player(float centerX, float centerY, float radius, Color c) {
     this->color = c;
 }
 
-void Player::shoot(int direction) {
+void Player::shoot(Vector2 direction) {
     Arrow arrow;
     arrow.position = { centerX, centerY };
-    switch (direction) {
-        case 0: arrow.direction = { 0, -1 }; break;
-        case 1: arrow.direction = { 0, 1 }; break;
-        case 2: arrow.direction = { -1, 0 }; break;
-        case 3: arrow.direction = { 1, 0 }; break;
+    float length = sqrtf(direction.x * direction.x + direction.y * direction.y);
+    if (length != 0) {
+        arrow.direction = { direction.x / length, direction.y / length };
+    } else {
+        arrow.direction = { 0, 0 };
     }
     arrows.push_back(arrow);
 }
 
 void Player::updateArrow(float deltaTime) {
+
     for (auto& arrow : arrows) {
         if (arrow.active) {
             arrow.position.x += arrow.direction.x * arrow.speed * deltaTime;
@@ -93,17 +94,10 @@ void Player::update(const Rectangle& wall, const Rectangle& anotherWall, const E
     else {
         canInteractWithNpc = false;
     }
-    if (IsKeyPressed(KEY_UP)) {
-        shoot(0);
-    }
-    if (IsKeyPressed(KEY_DOWN)) {
-        shoot(1);
-
-    }
-    if (IsKeyPressed(KEY_LEFT)) {
-        shoot(2);
-    }
-    if (IsKeyPressed(KEY_RIGHT)) {
-        shoot(3);
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 mouse = GetMousePosition();
+        Vector2 playerPos = { centerX, centerY };
+        Vector2 dir = { mouse.x - playerPos.x, mouse.y - playerPos.y };
+        shoot(dir);
     }
 }
