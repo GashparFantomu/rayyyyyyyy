@@ -136,6 +136,7 @@
     <ClCompile Include="rayyyyyyyy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\Arrow01(32x32).png" />
     <Image Include="assets\background.jpg" />
     <Image Include="assets\icon.png" />
     <Image Include="assets\knight.png" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="raylib-tileson.h" />
     <ClInclude Include="tileson.hpp" />
+    <ClInclude Include="weapons.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\desert.json" />

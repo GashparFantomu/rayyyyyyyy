@@ -1,14 +1,18 @@
 #pragma once
+using namespace std;
 #include <raylib.h>
 #include "Enemy.h"
 #include "Npc.h"
-#include "gameState.h" // Ensure gameState is included
+#include "gameState.h" 
+#include <vector>
+#include "weapons.h"
 
 
 class Player {
 public:
 	float centerY, centerX, radius;
 	Color color;
+	vector<Arrow> arrows;
 	Player();
 	Player(float centerX, float centerY, float radius, Color c);
 	void shoot(Vector2 direction);

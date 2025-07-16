@@ -43,6 +43,15 @@ void Player::updateArrow(float deltaTime) {
 
 void Player::draw(Texture2D texture){
     DrawTexture(texture, centerX - texture.width / 2, centerY - texture.height / 2, WHITE);
+
+}
+
+void Player::drawArrow() {
+    for (const auto& arrow : arrows) {
+        if (arrow.active) {
+            DrawRectangle(arrow.position.x - 5, arrow.position.y - 5, 10, 10, RED);
+        }
+    }
 }
 
 void Player::drawArrow() {
@@ -106,5 +115,11 @@ void Player::update(const Rectangle& wall, const Rectangle& anotherWall, const E
     }
     else {
         canInteractWithNpc = false;
+    }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 mouse = GetMousePosition();
+        Vector2 playerPos = { centerX, centerY };
+        Vector2 dir = { mouse.x - playerPos.x, mouse.y - playerPos.y };
+        shoot(dir);
     }
 }
