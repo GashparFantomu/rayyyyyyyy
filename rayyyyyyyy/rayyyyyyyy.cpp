@@ -10,7 +10,6 @@ float Lerp(float start, float end, float amount) { //easing la camera
     return start + (end - start) * amount;
 }
 
-
 int main(){
     InitWindow(1920, 800, "metal soul - prototype");
     InitAudioDevice();

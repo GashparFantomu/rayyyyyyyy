@@ -54,14 +54,6 @@ void Player::drawArrow() {
     }
 }
 
-void Player::drawArrow() {
-    for (const auto& arrow : arrows) {
-        if (arrow.active) {
-            DrawRectangle(arrow.position.x - 5, arrow.position.y - 5, 10, 10, RED);
-        }
-    }
-}
-
 void Player::shootCamera(const Camera2D& camera) {
     Vector2 mouseScreenPosition = GetMousePosition();
     Vector2 mouseWorldPosition = GetScreenToWorld2D(mouseScreenPosition, camera);
@@ -115,11 +107,5 @@ void Player::update(const Rectangle& wall, const Rectangle& anotherWall, const E
     }
     else {
         canInteractWithNpc = false;
-    }
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        Vector2 mouse = GetMousePosition();
-        Vector2 playerPos = { centerX, centerY };
-        Vector2 dir = { mouse.x - playerPos.x, mouse.y - playerPos.y };
-        shoot(dir);
     }
 }
