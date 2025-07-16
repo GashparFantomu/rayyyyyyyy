@@ -103,6 +103,10 @@ int main()
             //actualizari
             player.update(wall, anotherWall, enemy, npc, canInteractWithNpc, currentGameState);
             enemy.updateEmenyPosition();
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                player.shootCamera(camera);
+            }
+
             camera.target.x = Lerp(camera.target.x, player.centerX, lerpFactor);
             camera.target.y = Lerp(camera.target.y, player.centerY, lerpFactor);
             //camera.target.x = roundf(camera.target.x);
@@ -116,7 +120,6 @@ int main()
             BeginMode2D(camera);
             DrawTiled(map, 0, 0, WHITE);
 
-            //DrawTexture(background, 0, 0, WHITE);
 
             DrawRectangleRec(wall, GRAY); //zid 1
             DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
@@ -128,7 +131,6 @@ int main()
             
             EndMode2D();
 
-            // Draw "Interact (E)" centered at the bottom of the screen if the player can interact with the NPC
             if (canInteractWithNpc) {
                 DrawText("Interact(E)", screenWidth / 2, screenHeight - 65, 25, RAYWHITE);
                 //if (IsKeyPressed(KEY_E)) {
