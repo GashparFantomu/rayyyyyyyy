@@ -1,10 +1,110 @@
 ﻿#include "raylib.h"
 #include "raylib-tileson.h"
 #include "tileson.hpp"
+#include <filesystem>
 #include "Npc.h"
 #include "Enemy.h"
 #include "Player.h"
 #include "gameState.h"
+
+class GameMap {
+private:
+    tson::Map map;
+    std::vector<std::vector<bool>> collisionGrid;
+    int tileSize = 32;
+
+public:
+    bool LoadMap(const std::string& mapPath) {
+        tson::Tileson parser;
+        auto parseResult = parser.parse(mapPath); // Parse the map file
+
+        if (map.getStatus() != tson::ParseStatus::OK) {
+            TraceLog(LOG_ERROR, "Failed to load map: %s", mapPath.c_str());
+            return false;
+        }
+
+        // Initialize collision grid
+        SetupCollisionGrid();
+
+        TraceLog(LOG_INFO, "Map loaded successfully: %dx%d",
+            map.getSize().x, map.getSize().y);
+        return true;
+    }
+
+    void SetupCollisionGrid() {
+        int mapWidth = map.getSize().x;
+        int mapHeight = map.getSize().y;
+
+        collisionGrid.resize(mapHeight);
+        for (int y = 0; y < mapHeight; y++) {
+            collisionGrid[y].resize(mapWidth, false);
+        }
+
+        // Find collision layer
+        auto* collisionLayer = map.getLayer("collision");
+        if (!collisionLayer) {
+            TraceLog(LOG_WARNING, "No collision layer found");
+            return;
+        }
+
+        // Process collision tiles
+        for (auto& tilePair : collisionLayer->getTileObjects()) {
+            auto& tileObject = tilePair.second; // Access the tson::TileObject from the pair
+            int x = tileObject.getPosition().x / tileSize;
+            int y = tileObject.getPosition().y / tileSize;
+
+            if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
+                // Check if tile has collision property
+                if (tileObject.getTile() && tileObject.getTile()->getProperties().hasProperty("solid")) {
+                    collisionGrid[y][x] = tileObject.getTile()->getProperties().getValue<bool>("solid");
+                }
+            }
+        }
+    }
+
+    bool IsColliding(Vector2 position, Vector2 size) {
+        // Convert world position to tile coordinates
+        int startX = (int)(position.x / tileSize);
+        int startY = (int)(position.y / tileSize);
+        int endX = (int)((position.x + size.x) / tileSize);
+        int endY = (int)((position.y + size.y) / tileSize);
+
+        // Check bounds
+        if (startX < 0 || startY < 0 || endX >= collisionGrid[0].size() ||
+            endY >= collisionGrid.size()) {
+            return true; // Out of bounds = collision
+        }
+
+        // Check collision grid
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                if (collisionGrid[y][x]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    void DrawMap(Camera2D camera) {
+        // Use raylib-tileson to draw the map
+        // This is a simplified version - you'll need to implement layer rendering
+
+        for (auto& layer : map.getLayers()) {
+            if (layer.getName() == "collision") continue; // Skip collision layer
+
+            for (auto& tile : layer.getTileObjects()) {
+                Vector2 pos = {
+                    (float)tile.second.getPosition().x,
+                    (float)tile.second.getPosition().y
+                };
+
+                // Draw tile (you'll need to load your tileset texture)
+                // DrawTexture(tilesetTexture, pos.x, pos.y, WHITE);
+            }
+        }
+    }
+};
+
 
 float Lerp(float start, float end, float amount) { //easing la camera
     return start + (end - start) * amount;
