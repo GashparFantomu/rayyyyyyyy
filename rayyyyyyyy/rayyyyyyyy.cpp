@@ -86,8 +86,6 @@ public:
         return false;
     }
     void DrawMap(Camera2D camera) {
-        // Use raylib-tileson to draw the map
-        // This is a simplified version - you'll need to implement layer rendering
 
         for (auto& layer : map.getLayers()) {
             if (layer.getName() == "collision") continue; // Skip collision layer
@@ -212,14 +210,12 @@ int main(){
             camera.target.x = roundf(camera.target.x);
             camera.target.y = roundf(camera.target.y);
 
-
             BeginDrawing();
             //desenare
             ClearBackground(BLACK);
 
             BeginMode2D(camera);
             DrawTiled(map, 0, 0, WHITE);
-
 
             DrawRectangleRec(wall, GRAY); //zid 1
             DrawRectangleRec(anotherWall, DARKPURPLE); //alt zid 
@@ -256,7 +252,6 @@ int main(){
             }
             EndDrawing();
         }
-
     }
     UnloadMusicStream(bgMusic);
     UnloadMusicStream(menuMusic);
